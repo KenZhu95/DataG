@@ -105,11 +105,10 @@ public class MainActivity extends AppCompatActivity {
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
-        button_navi = (Button) findViewById(R.id.button_navi);
-        button_toast = (Button) findViewById(R.id.button_toast);
-        myMapView = (MapView) findViewById(R.id.bmapView);
+        button_navi = findViewById(R.id.button_navi);
+        button_toast = findViewById(R.id.button_toast);
+        myMapView = findViewById(R.id.bmapView);
         mBaiduMap = myMapView.getMap();
-        //checkbox_traffic.setChecked(true);
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
         button_navi.setOnClickListener(new View.OnClickListener() {
