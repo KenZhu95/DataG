@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private BNRoutePlanNode mStartNode = null;
 
     private BNRoutePlanNode mBNRoutePlanNode = null;
-    private List<BNRoutePlanNode> mBNRoutePlanNodes;
+    private List<BNRoutePlanNode> mBNRoutePlanNodes = new ArrayList<>();
 
     Button button_navi, button_toast;
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
-        //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);
+
         button_navi = findViewById(R.id.button_navi);
         button_toast = findViewById(R.id.button_toast);
         myMapView = findViewById(R.id.bmapView);
@@ -124,21 +124,21 @@ public class MainActivity extends AppCompatActivity {
                 startToast();
             }
         });
-        Intent intent = getIntent();
-        if (intent != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                //toastMessage = bundle.getString("title");
-                if_bundle = true;
-                mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
-                mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
-            }
-        }
-
-        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
-            finish();
-            return;
-        }
+//        Intent intent = getIntent();
+//        if (intent != null) {
+//            Bundle bundle = intent.getExtras();
+//            if (bundle != null) {
+//                //toastMessage = bundle.getString("title");
+//                if_bundle = true;
+//                mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
+//                mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
+//            }
+//        }
+//
+//        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
+//            finish();
+//            return;
+//        }
 
         checkPerm();
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         initNavigation();
 
         //try to begin navigation 10s after launching App
-        launchNavigation();
+        //launchNavigation();
     }
 
     private void checkPerm() {
@@ -202,6 +202,22 @@ public class MainActivity extends AppCompatActivity {
         if (!locationClient.isStarted()) {
             locationClient.start();
             myOrientationListener.start();
+        }
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                //toastMessage = bundle.getString("title");
+                if_bundle = true;
+                mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
+                mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
+                launchNavigation();
+            }
+        }
+
+        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
+            finish();
+            return;
         }
     }
 
@@ -385,14 +401,17 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "还未初始化!", Toast.LENGTH_SHORT).show();
         }
         MyLocationData currentLoc = mBaiduMap.getLocationData();
+        BNRoutePlanNode sNode = new BNRoutePlanNode(currentLoc.longitude, currentLoc.latitude, "Start", "Start", BNRoutePlanNode.CoordinateType.BD09LL);
         final List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
-        if (if_bundle && mBNRoutePlanNodes.size() > 0) {
+        if (mBNRoutePlanNodes.size() > 0) {
             mStartNode = mBNRoutePlanNodes.get(0);
+            //mStartNode = sNode;
+            //list.add(sNode);
             for (BNRoutePlanNode node : mBNRoutePlanNodes) {
                 list.add(node);
             }
         } else {
-            BNRoutePlanNode sNode = new BNRoutePlanNode(currentLoc.longitude, currentLoc.latitude, "Start", "Start", BNRoutePlanNode.CoordinateType.BD09LL);
+            //BNRoutePlanNode sNode = new BNRoutePlanNode(currentLoc.longitude, currentLoc.latitude, "Start", "Start", BNRoutePlanNode.CoordinateType.BD09LL);
             BNRoutePlanNode node_1 = new BNRoutePlanNode(currentLoc.longitude + 0.05, currentLoc.latitude, "node 1", "node 1", BNRoutePlanNode.CoordinateType.BD09LL);
             BNRoutePlanNode node_2 = new BNRoutePlanNode(currentLoc.longitude + 0.1, currentLoc.latitude + 0.05, "node 2", "node 2", BNRoutePlanNode.CoordinateType.BD09LL);
             BNRoutePlanNode eNode = new BNRoutePlanNode(currentLoc.longitude - 0.2, currentLoc.latitude - 0.2, "End", "End", BNRoutePlanNode.CoordinateType.BD09LL);
