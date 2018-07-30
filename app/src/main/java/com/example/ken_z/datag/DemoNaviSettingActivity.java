@@ -54,6 +54,7 @@ public class DemoNaviSettingActivity extends Activity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onsdk_activity_setting);
+        MyApplication.getInstance().addActivity(this);
         initUserConfig();
         initViews();
         initClickListener();

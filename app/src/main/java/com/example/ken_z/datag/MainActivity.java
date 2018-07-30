@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final String ROUTE_PLAN_NODE = "routePlanNode";
     static final String ROUTE_PLAN_NODES = "routePlanNodes";
+    static final String NAV_ABORT = "navigationAbort";
     private static final String APP_FOLDER_NAME = "datag";
 
     private String toastMessage = "None";
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private MapView myMapView = null;
     private BaiduMap mBaiduMap;
     private boolean if_start_navi = false;
+    private boolean if_abort_navi = false;
 
     public MyOrientationListener myOrientationListener;
     boolean isFirst = true; //whether to set location for the first time
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        MyApplication.getInstance().addActivity(this);
 
         button_navi = findViewById(R.id.button_navi);
         button_toast = findViewById(R.id.button_toast);
@@ -124,21 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 startToast();
             }
         });
-//        Intent intent = getIntent();
-//        if (intent != null) {
-//            Bundle bundle = intent.getExtras();
-//            if (bundle != null) {
-//                //toastMessage = bundle.getString("title");
-//                if_bundle = true;
-//                mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
-//                mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
-//            }
-//        }
-//
-//        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
-//            finish();
-//            return;
-//        }
 
         checkPerm();
 
@@ -209,9 +197,41 @@ public class MainActivity extends AppCompatActivity {
             if (bundle != null) {
                 //toastMessage = bundle.getString("title");
                 if_bundle = true;
-                mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
-                mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
-                launchNavigation();
+                int abort_nav = bundle.getInt(NAV_ABORT);
+                if (abort_nav == 0) {
+                    mBNRoutePlanNode = (BNRoutePlanNode) bundle.getSerializable(ROUTE_PLAN_NODE);
+                    mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
+                    launchNavigation();
+                } else {
+                    if_abort_navi = true;
+                    //to exit App
+                    mOffHandler = new Handler() {
+                        public void handleMessage(Message msg) {
+                            if (msg.what > 0) {
+                            } else {
+                                MyApplication.getInstance().exit();
+                                mOffTimer.cancel();
+                            }
+                            super.handleMessage(msg);
+                        }
+                    };
+                    //count down timer
+                    mOffTimer = new Timer(true);
+                    TimerTask tt = new TimerTask() {
+                        int countTime = 5;
+                        @Override
+                        public void run() {
+                            if (countTime > 0) {
+                                countTime--;
+                            }
+                            Message msg = new Message();
+                            msg.what = countTime;
+                            mOffHandler.sendMessage(msg);
+                        }
+                    };
+                    mOffTimer.schedule(tt, 1000, 1000);
+                }
+
             }
         }
 
@@ -452,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = new Intent(MainActivity.this,
                                         GuideActivity.class);
                                 Bundle bundle = new Bundle();
+                                bundle.putInt(NAV_ABORT, 0);
                                 bundle.putSerializable(ROUTE_PLAN_NODE, mStartNode);
                                 bundle.putSerializable(ROUTE_PLAN_NODES, (Serializable)list);
                                 intent.putExtras(bundle);

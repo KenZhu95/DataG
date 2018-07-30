@@ -58,6 +58,6 @@ dependencies {
     implementation files('libs/protobuf-java-2.3.0-micro.jar')
     //implementation files('libs/lbsCoreSDK.jar')
     implementation files('libs/javapoet-1.9.0.jar')
-    //implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
     //implementation 'com.r0adkll:slidableactivity:2.0.6'
 }

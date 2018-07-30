@@ -30,7 +30,8 @@
             android:process=":remote" />
 
         <activity android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +39,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".DemoNaviSettingActivity" />
-        <activity android:name=".GuideActivity" />
+        <activity android:name=".GuideActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
