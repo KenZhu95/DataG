@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     mBNRoutePlanNodes = (List<BNRoutePlanNode>) bundle.getSerializable(ROUTE_PLAN_NODES);
                     launchNavigation();
                 } else {
-                    if_abort_navi = true;
+                    //if_abort_navi = true;
                     //to exit App
                     mOffHandler = new Handler() {
                         public void handleMessage(Message msg) {
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
                             case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_FAILED:
                                 Toast.makeText(MainActivity.this, "算路失败", Toast.LENGTH_SHORT)
                                         .show();
-                                if_start_navi = false;
+                                //if_start_navi = false;
                                 break;
                             case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_TO_NAVI:
                                 Toast.makeText(MainActivity.this, "算路成功准备进入导航", Toast.LENGTH_SHORT)
