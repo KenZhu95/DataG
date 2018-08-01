@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView myMapView = null;
     private BaiduMap mBaiduMap;
-    private boolean if_start_navi = false;
-    private boolean if_abort_navi = false;
+//    private boolean if_start_navi = false;
+//    private boolean if_abort_navi = false;
 
     public MyOrientationListener myOrientationListener;
     boolean isFirst = true; //whether to set location for the first time
@@ -133,8 +133,6 @@ public class MainActivity extends AppCompatActivity {
         initLocation();
         initNavigation();
 
-        //try to begin navigation 10s after launching App
-        //launchNavigation();
     }
 
     private void checkPerm() {
@@ -218,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                     //count down timer
                     mOffTimer = new Timer(true);
                     TimerTask tt = new TimerTask() {
-                        int countTime = 5;
+                        int countTime = 3;
                         @Override
                         public void run() {
                             if (countTime > 0) {
